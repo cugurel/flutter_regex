@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class RegexForm extends StatefulWidget {
+
   RegexForm({Key? key}) : super(key: key);
 
   @override
