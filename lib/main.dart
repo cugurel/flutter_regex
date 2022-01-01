@@ -37,7 +37,12 @@ class _RegexFormState extends State<RegexForm> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  var phoneMask = MaskTextInputFormatter(mask: '+9 (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+
   final userNameValid = RegExp(r'^[a-z0-9]{5,12}$',caseSensitive: false);
+  final emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  final phoneValid = RegExp(r'^[]{5,12}$',caseSensitive: false);
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +87,7 @@ class _RegexFormState extends State<RegexForm> {
             ),
             TextField(
               controller: phoneController,
+              inputFormatters: [phoneMask],
               maxLines: 1,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.phone),
@@ -102,10 +108,10 @@ class _RegexFormState extends State<RegexForm> {
                     borderRadius: BorderRadius.circular(20),
                   )),
                   onPressed: () {
-                    if(userNameValid.hasMatch(userNameController.text.toString())){
-                      print("Kullanıcı adı geçerlidir.");
+                    if(emailValid.hasMatch(emailController.text.toString())){
+                      print("Email geçerlidir.");
                     }else{
-                      print("Kullanıcı adı geçerli değil.");
+                      print("Email geçerli değil.");
                     }
                   },
                   child: const Text("GÖNDER")),
