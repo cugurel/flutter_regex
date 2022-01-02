@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+import 'luhn_check.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -24,7 +26,6 @@ class _MyAppState extends State<MyApp> {
 }
 
 class RegexForm extends StatefulWidget {
-
   RegexForm({Key? key}) : super(key: key);
 
   @override
@@ -32,17 +33,19 @@ class RegexForm extends StatefulWidget {
 }
 
 class _RegexFormState extends State<RegexForm> {
-
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController creditCardController = TextEditingController();
 
-  var phoneMask = MaskTextInputFormatter(mask: '+9 (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+  var phoneMask = MaskTextInputFormatter(
+      mask: '+9 (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+  var creditMask = MaskTextInputFormatter(
+      mask: '####-####-####-####', filter: {"#": RegExp(r'[0-9]')});
 
-  final userNameValid = RegExp(r'^[a-z0-9]{5,12}$',caseSensitive: false);
-  final emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  final phoneValid = RegExp(r'^[]{5,12}$',caseSensitive: false);
-
+  final userNameValid = RegExp(r'^[a-z0-9]{5,12}$', caseSensitive: false);
+  final emailValid = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +102,20 @@ class _RegexFormState extends State<RegexForm> {
             const SizedBox(
               height: 20,
             ),
+            TextField(
+              controller: creditCardController,
+              inputFormatters: [creditMask],
+              maxLines: 1,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.credit_card),
+                hintText: "Kredi Kart No: ",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             SizedBox(
               width: 350,
               height: 50,
@@ -108,10 +125,11 @@ class _RegexFormState extends State<RegexForm> {
                     borderRadius: BorderRadius.circular(20),
                   )),
                   onPressed: () {
-                    if(emailValid.hasMatch(emailController.text.toString())){
-                      print("Email geçerlidir.");
-                    }else{
-                      print("Email geçerli değil.");
+                    if (validateCardNumWithLuhnAlgorithm(
+                        creditMask.getUnmaskedText().toString())) {
+                      print("Kredi Kartı geçerlidir.");
+                    } else {
+                      print("Kredi Kartı geçerli değil.");
                     }
                   },
                   child: const Text("GÖNDER")),
